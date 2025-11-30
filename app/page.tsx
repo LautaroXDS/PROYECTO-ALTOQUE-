@@ -1,114 +1,93 @@
-import { supabase } from '../lib/supabase'
+import { MapPin, Trophy, Calendar, Clock } from "lucide-react";
 
-
-interface Cancha {
-  id: number
-  nombre: string
-  deporte: string
-  formato: string
-  superficie: string
-  precio_hora: number
-  caracteristicas: string[] | null
-  
-  complejos: {
-    nombre: string
-    direccion: string
-  } | null
-}
-
-export default async function Home() {
-  
-  
-  const { data: canchas, error } = await supabase
-    .from('canchas')
-    .select(`
-      *,
-      complejos (
-        nombre,
-        direccion
-      )
-    `)
-
-  if (error) {
-    console.error("Error trayendo canchas:", error)
-    return <div className="p-10 text-red-500">Error cargando las canchas. Revisá la consola.</div>
-  }
-
-
+export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50 p-8">
-      <header className="mb-10 text-center">
-        <h1 className="text-4xl font-black text-gray-900 mb-2">
-          AlToque ⚡
-        </h1>
-        <p className="text-gray-500">Reservá tu cancha en segundos</p>
-      </header>
+    <main className="min-h-screen bg-white">
+      {}
+      <div className="relative w-full min-h-[600px] flex flex-col justify-center items-center pb-20 md:pb-0">
+        {/* 1. IMAGEN DE FONDO + GRADIENTE */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1626248316972-277121669460?q=80&w=2070&auto=format&fit=crop"
+            alt="Fondo Tenis"
+            className="w-full h-full object-cover object-right"
+          />
+          <div className="absolute inset-0 from-white via-white/90 to-transparent/20"></div>
+        </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-       
-        {canchas?.map((cancha: any) => (
-          <div 
-            key={cancha.id} 
-            className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition border border-gray-100"
-          >
-        
-            <div className={`h-24 flex items-center justify-center ${
-              cancha.deporte === 'futbol' ? 'bg-emerald-500' : 'bg-blue-500'
-            }`}>
-              <span className="text-white font-bold text-3xl uppercase tracking-widest opacity-20">
-                {cancha.deporte}
-              </span>
+        {/* 2. CONTENIDO (Texto) */}
+        {/* CAMBIO 2: Centramos el texto y le damos margen arriba para separar */}
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-20 md:pt-0">
+          <h1 className="text-5xl md:text-6xl font-black text-emerald-600 leading-tight mb-4 text-center md:text-left">
+            Reserva tu cancha <br />
+            <span className="text-emerald-500">al instante</span>
+          </h1>
+          <p className="text-xl text-gray-500 max-w-lg mb-8 font-medium text-center md:text-left mx-auto md:mx-0">
+            Explorá las canchas disponibles en tu ciudad y en tiempo real.
+          </p>
+        </div>
+
+
+        <div className="relative mt-10 md:absolute md:mt-0 md:-bottom-8 w-[95%] max-w-6xl z-20">
+          <div className="bg-white rounded-3xl md:rounded-full shadow-2xl p-4 md:p-2 flex flex-col md:flex-row items-center divide-y md:divide-y-0 md:divide-x divide-gray-200 border border-gray-100">
+            {/* Input: Ciudad */}
+            <div className="flex-1 px-4 py-3 w-full hover:bg-gray-50 rounded-lg md:rounded-l-full transition cursor-pointer">
+              <div className="flex items-center gap-3 mb-1">
+                <MapPin className="w-5 h-5 text-emerald-500" />
+                <span className="text-sm font-bold text-gray-700">
+                  Ubicación
+                </span>
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar Ciudad"
+                className="w-full bg-transparent outline-none text-gray-600 placeholder-gray-400"
+              />
             </div>
 
-          
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800 leading-tight">
-                    {cancha.nombre}
-                  </h2>
-                  <p className="text-sm text-gray-500 font-medium">
-                    📍 {cancha.complejos?.nombre || "Complejo Desconocido"}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="block text-lg font-bold text-slate-900">
-                    ${cancha.precio_hora.toLocaleString('es-AR')}
-                  </span>
-                </div>
+            {/* Input: Deporte */}
+            <div className="flex-1 px-4 py-3 w-full hover:bg-gray-50 transition cursor-pointer">
+              <div className="flex items-center gap-3 mb-1">
+                <Trophy className="w-5 h-5 text-emerald-500" />
+                <span className="text-sm font-bold text-gray-700">Deporte</span>
               </div>
+              <select className="w-full outline-none text-gray-600 appearance-none cursor-pointer bg-white">
+                <option>Elige deporte</option>
+                <option>Fútbol</option>
+                <option>Padel</option>
+                <option>Tenis</option>
+              </select>
+            </div>
 
-          
-              <div className="flex flex-wrap gap-2 mt-4 mb-6">
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md font-medium uppercase">
-                  {cancha.formato}
-                </span>
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md font-medium uppercase">
-                  {cancha.superficie}
-                </span>
-                {cancha.caracteristicas?.map((car: string, i: number) => (
-                   <span key={i} className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-md font-medium capitalize">
-                     {car}
-                   </span>
-                ))}
+            {/* Input: Fecha */}
+            <div className="flex-1 px-4 py-3 w-full hover:bg-gray-50 transition cursor-pointer">
+              <div className="flex items-center gap-3 mb-1">
+                <Calendar className="w-5 h-5 text-emerald-500" />
+                <span className="text-sm font-bold text-gray-700">Fecha</span>
               </div>
+              <p className="text-gray-600 text-sm">Mañana 30/11</p>
+            </div>
 
-              <button className="w-full bg-slate-900 text-white py-3 rounded-lg font-semibold hover:bg-slate-800 transition active:scale-95">
-                Reservar Ahora
+            {/* Input: Hora */}
+            <div className="flex-1 px-4 py-3 w-full hover:bg-gray-50 transition cursor-pointer">
+              <div className="flex items-center gap-3 mb-1">
+                <Clock className="w-5 h-5 text-emerald-500" />
+                <span className="text-sm font-bold text-gray-700">Horario</span>
+              </div>
+              <p className="text-gray-600 text-sm">19:00hs</p>
+            </div>
+
+            {/* Botón Buscar */}
+            <div className="p-2 w-full md:w-auto mt-2 md:mt-0">
+              <button className="w-full md:w-auto bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-xl md:rounded-full transition shadow-md">
+                Buscar canchas
               </button>
             </div>
           </div>
-        ))}
-        
-        {/* Si no hay datos */}
-        {canchas?.length === 0 && (
-          <p className="col-span-3 text-center text-gray-400">
-            No se encontraron canchas disponibles.
-          </p>
-        )}
-
+        </div>
       </div>
+      ;{}
+      <div className="h-32 bg-slate-50"></div>
     </main>
-  )
+  );
 }
