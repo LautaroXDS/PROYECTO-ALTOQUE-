@@ -16,3 +16,17 @@
 .animate-fade-in-up {
   animation: fadeInUp 0.5s ease-out forwards;
 }
+
+/* Animación para el carrusel infinito */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Se mueve hasta la mitad (donde empieza la copia) */
+  }
+}
+
+.animate-infinite-scroll {
+  animation: scroll 20s linear infinite; /* 20s es la velocidad (más alto = más lento) */
+}
