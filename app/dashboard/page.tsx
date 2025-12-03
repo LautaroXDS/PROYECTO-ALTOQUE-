@@ -124,7 +124,7 @@ export default async function Home() {
                                         {barra.valor}
                                     </div>
                                     {/* La Barra */}
-                                    <div className={`w-full max-w-[40px] bg-emerald-100 rounded-t-lg group-hover:bg-emerald-400 transition-all duration-300 relative ${barra.altura}`}>
+                                    <div className={`w-full max-w-40px bg-emerald-100 rounded-t-lg group-hover:bg-emerald-400 transition-all duration-300 relative ${barra.altura}`}>
                                         {/* Barra de progreso visual (más oscura abajo) */}
                                         <div className="absolute bottom-0 left-0 w-full bg-emerald-500/20 h-1/3 rounded-b-sm"></div>
                                     </div>

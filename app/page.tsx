@@ -3,6 +3,7 @@ import BannerDinamico from "@/components/BannerDinamico";
 import SponsorsBanner from "@/components/SponsorsBanner";
 import CTASection from "@/components/CTASection";
 import PreguntasFrecuentes from "@/components/PreguntasFrecuentes";
+import ComoFunciona  from "@/components/ComoFunciona";
 
 import { supabase } from '@/lib/supabase'
 import Buscador from '@/components/Buscador'
@@ -41,7 +42,7 @@ export default async function Home() {
 
       <div className="h-32 bg-slate-50"></div>
       
- 
+      <ComoFunciona />
       
       <BannerDinamico />
       

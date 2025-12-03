@@ -18,7 +18,7 @@ export default function SponsorsBanner() {
 
             {/* --- FONDO DECORATIVO (Patrón Geométrico) --- */}
             <div className="absolute inset-0 opacity-10 pointer-events-none">
-                <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.3)_50%,transparent_75%,transparent_100%)] bg-[length:40px_40px]"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.3)_50%,transparent_75%,transparent_100%)] bg-length:40px_40px"></div>
             </div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-6">
