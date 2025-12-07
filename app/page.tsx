@@ -3,7 +3,10 @@ import BannerDinamico from "@/components/BannerDinamico";
 import SponsorsBanner from "@/components/SponsorsBanner";
 import CTASection from "@/components/CTASection";
 import PreguntasFrecuentes from "@/components/PreguntasFrecuentes";
-import ComoFunciona  from "@/components/ComoFunciona";
+import { Caracteristicas } from "@/components/Caracteristicas";
+import { Hero } from "@/components/Hero";
+// import { CanchasTendencias } from "@/components/CanchasTendencias"; 
+import { Testimonios } from "@/components/Testimonios";
 
 import { supabase } from '@/lib/supabase'
 import Buscador from '@/components/Buscador'
@@ -19,34 +22,19 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="relative w-full min-h-[600px] flex flex-col justify-center items-center pb-20 md:pb-0">
-        
-  
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-20 md:pt-0">
-          <h1 className="text-5xl md:text-6xl font-black text-emerald-600 leading-tight mb-4 text-left">
-            Reserva tu cancha <br />
-            <span className="text-emerald-500">al instante</span>
-          </h1>
-          <p className="text-xl text-gray-500 max-w-lg mb-8 font-medium text-left mx-auto md:mx-0">
-            Explorá las canchas disponibles en tu ciudad y en tiempo real.
-          </p>
-        </div>
+      {/* ----------------------------------------------------------------------- */}
 
+      <Hero />
 
-        <div className="relative mt-10 md:absolute md:mt-0 md:-bottom-8 w-[95%] max-w-6xl z-20">
-        
-            <Buscador deportesDisponibles={deportesUnicos} />
-        </div>
-        
-      </div>
-
-      <div className="h-32 bg-slate-50"></div>
+      <Buscador deportesDisponibles={deportesUnicos} />
       
-      <ComoFunciona />
+      
       
       <BannerDinamico />
       
-   
+      <Caracteristicas />
+
+      <Testimonios />
       
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-20 md:pt-0 mt-20">
         <h1 className="text-5xl md:text-6xl font-black text-emerald-600 leading-tight mb-4 text-left">
