@@ -1,14 +1,16 @@
+// app/login/page.tsx
 'use client'
 
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link' // Importar Link
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
-import { toast } from 'sonner' // Asumiendo que usas sonner o tu librería de toast
+import { toast } from 'sonner' 
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -16,7 +18,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  // Cliente supabase para el navegador
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -33,41 +34,45 @@ export default function LoginPage() {
       })
 
       if (error) {
-        toast.error("Error al ingresar: " + error.message)
+        toast.error("Error: " + error.message)
         setLoading(false)
         return
       }
 
-      // Verificar rol para redirigir
+      // Consultar el perfil para ver el rol
       const { data: { user } } = await supabase.auth.getUser()
+      
       const { data: perfil } = await supabase
         .from('perfiles')
         .select('rol')
         .eq('id', user?.id)
         .single()
 
+      toast.success("¡Bienvenido!")
+
       if (perfil?.rol === 'admin') {
         router.push('/dashboard')
       } else {
-        router.push('/') // Usuario normal va al home
+        router.push('/') // O a /mis-reservas cuando la creemos
       }
       
       router.refresh()
       
     } catch (error) {
       console.error(error)
+      toast.error("Ocurrió un error inesperado")
       setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
           <div className="flex justify-center mb-4">
              <img src="/img/Logo.png" alt="AlToque Logo" className="h-10 w-auto" />
           </div>
-          <CardTitle className="text-center text-2xl">Iniciar Sesión</CardTitle>
+          <CardTitle className="text-center text-2xl font-bold text-slate-900">Iniciar Sesión</CardTitle>
           <CardDescription className="text-center">
             Ingresa a tu cuenta para gestionar tus reservas
           </CardDescription>
@@ -102,9 +107,9 @@ export default function LoginPage() {
             </Button>
             <p className="text-sm text-center text-gray-500">
               ¿No tienes cuenta?{' '}
-              <a href="/register" className="text-emerald-600 font-semibold hover:underline">
+              <Link href="/register" className="text-emerald-600 font-semibold hover:underline">
                 Regístrate gratis
-              </a>
+              </Link>
             </p>
           </CardFooter>
         </form>
