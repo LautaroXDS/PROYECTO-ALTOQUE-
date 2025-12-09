@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Loader2 } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Loader2, MailCheck } from 'lucide-react' // Usamos un icono de email
 import { toast } from 'sonner'
 
 export default function RegisterPage() {
@@ -17,6 +18,9 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
+  // Estado para controlar el popup de éxito
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  
   const router = useRouter()
 
   const supabase = createBrowserClient(
@@ -29,15 +33,13 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      // 1. Crear usuario en Auth
-      // Pasamos los datos extra en 'options.data' para que el Trigger de SQL los capture
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
-            phone: phone, // Esto se pasará a la tabla perfiles si el trigger está bien hecho
+            phone: phone,
           },
         },
       })
@@ -48,20 +50,22 @@ export default function RegisterPage() {
         return
       }
 
-      // Opcional: Si el trigger falló o no existe, forzamos la actualización en perfiles
+      // Si el usuario existe (registro exitoso), mostramos el popup
       if (data.user) {
+        // Intentamos guardar en perfiles (por si falla el trigger)
          await supabase.from('perfiles').upsert({
              id: data.user.id,
              email: email,
              nombre: fullName,
              telefono: phone,
-             rol: 'usuario' // Por defecto todos son usuarios
+             rol: 'usuario' 
          })
+         
+         // ABRIMOS EL POPUP EN LUGAR DE REDIRIGIR
+         setShowSuccessModal(true)
       }
-
-      toast.success("Cuenta creada exitosamente")
-      router.push('/') 
-      router.refresh()
+      
+      setLoading(false)
 
     } catch (error) {
       console.error(error)
@@ -72,6 +76,8 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      
+      {/* --- FORMULARIO DE REGISTRO --- */}
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
           <div className="flex justify-center mb-4">
@@ -84,27 +90,26 @@ export default function RegisterPage() {
         </CardHeader>
         <form onSubmit={handleRegister}>
           <CardContent className="space-y-4">
-            
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                <Label htmlFor="name">Nombre Completo</Label>
-                <Input 
-                    id="name" 
-                    placeholder="Juan Pérez" 
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                />
+                  <Label htmlFor="name">Nombre Completo</Label>
+                  <Input 
+                      id="name" 
+                      placeholder="Juan Pérez" 
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                  />
                 </div>
                 <div className="space-y-2">
-                <Label htmlFor="phone">Teléfono</Label>
-                <Input 
-                    id="phone" 
-                    placeholder="11 1234 5678" 
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                />
+                  <Label htmlFor="phone">Teléfono</Label>
+                  <Input 
+                      id="phone" 
+                      placeholder="11 1234 5678" 
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                  />
                 </div>
             </div>
 
@@ -144,6 +149,33 @@ export default function RegisterPage() {
           </CardFooter>
         </form>
       </Card>
+
+      {/* --- POPUP MODERNO DE CONFIRMACIÓN --- */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader>
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 mb-4">
+              <MailCheck className="h-10 w-10 text-emerald-600" />
+            </div>
+            <DialogTitle className="text-2xl font-bold text-emerald-900">¡Casi listo!</DialogTitle>
+            <DialogDescription className="text-gray-600 pt-2 text-base">
+              Hemos enviado un correo de confirmación a <br/>
+              <span className="font-semibold text-emerald-700">{email}</span>.
+              <br/><br/>
+              Por favor, revisa tu bandeja de entrada (y spam) para activar tu cuenta antes de iniciar sesión.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center mt-4">
+            <Button 
+              className="w-full bg-emerald-600 hover:bg-emerald-700 font-bold"
+              onClick={() => router.push('/login')}
+            >
+              Entendido, ir al Login
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   )
 }
